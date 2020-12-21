@@ -1,0 +1,19 @@
+{
+    "plugins": ["jsdoc-route-plugin"],
+    
+    "source": {
+        "include":["API"],
+        "includePattern": ".+\\.js(doc|x)?$",
+        "excludePattern": "(node_modules/|docs)"
+    },
+    
+
+    "templates": {
+        "cleverLinks": true,
+        "monospaceLinks": true
+    },
+    "opts":{
+        "recurse":true,
+        "destination":"./docs/"
+    }
+}

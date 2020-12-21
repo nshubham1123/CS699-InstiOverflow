@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/Post/Post.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/Post/Post.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, {useEffect, Fragment,useState} from 'react';
+import moment from 'moment';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
+import { getPost, deletePost } from '../../redux/posts/posts.actions';
+import { getAnswers, deleteAnswer, addAnswer } from '../../redux/answers/answersAction';
+import { getComments, deleteComment, addComment } from '../../redux/comments/commentsAction';
+
+import { ReactComponent as UpVote } from '../../assets/ArrowUpLg.svg';
+import { ReactComponent as DownVote } from '../../assets/ArrowDownLg.svg';
+import { useLocation } from 'react-router-dom';
+import SideBar from '../../components/leftSidePanel/leftSide.';
+
+import './Post.styles.scss'
+import Spinner from "../../components/spinner/spinner";
+
+/**
+ * Page displaying Post
+ * @component
+ * @param deletePost - To delete Post
+ * @param deleteanswer - To delete answer
+ * @param addAnswer - To add answer
+ * @param deleteComment - To delete Comment
+ * @param addComment - To add comment
+ * @param getAnswers  - Get all answers
+ * @param getComments - Get all comments
+ * @param auth - Authorization
+ * @param getPost - To get Post
+ * @param answer - answer for post
+ * @param comment - comment for post
+ *  
+ */
+
+const Post = (
+    {
+        deletePost,
+        deleteAnswer,
+        addAnswer,
+        deleteComment,
+        addComment,
+        getAnswers,
+        getComments,
+        auth,
+        getPost,
+        answer,
+        comment,
+        post: {
+            post,
+            loading
+        },
+        match
+    }) => {
+
+    useEffect(() => {
+        getPost(match.params.id);
+        getAnswers(match.params.id);
+        getComments(match.params.id);
+        // eslint-disable-next-line
+    }, [ getPost, getAnswers, getComments ]);
+
+    const [ formData, setFormData ] = useState({
+        body: ''
+    });
+
+    const { body } = formData;
+
+    const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
+
+    const onSubmit = async e => {
+        e.preventDefault();
+        addComment(match.params.id, {body});
+        setFormData({
+            body: ''
+        });
+    };
+
+    const [ formDataAnswer, setFormDataAnswer ] = useState({
+        text: ''
+    });
+
+    const { text } = formDataAnswer;
+
+    const onChangeAnswer = e => setFormDataAnswer({ ...formData, [e.target.name]: e.target.value });
+
+    const onSubmitAnswer = async e => {
+        e.preventDefault();
+        addAnswer(match.params.id,{text});
+        setFormDataAnswer({
+            text: ''
+        });
+    };
+    console.log("post",post);
+    return loading || post === null ? &lt;Spinner type='page' width='75px' height='200px'/> : &lt;Fragment>
+        &lt;div className='page'>
+            &lt;SideBar/>
+            &lt;div id="content">
+                &lt;div id='mainbar' className='post'>
+                    &lt;div className='question-header fc-black-800 pl24'>
+                        &lt;h1>{post.title}&lt;/h1>
+                    &lt;/div>
+                    &lt;div className='question-date fc-black-800 pl24'>
+                        &lt;div className='grid-cell'>
+                                &lt;span className='fc-light'>
+                                    Asked
+                                &lt;/span>
+                            &lt;time dateTime={ moment(post.created_at).fromNow(true) }>
+                                { moment(post.created_at).fromNow(true) } ago
+                            &lt;/time>
+                        &lt;/div>
+                    &lt;/div>
+                    &lt;div className='question-main pl24 pt16'>
+                        &lt;div className='question'>
+                            &lt;div className='post-layout'>
+                                &lt;div className='vote-cell fc-black-800'>
+                                    &lt;div className='stats'>
+                                        &lt;div className='vote'>
+                                            &lt;span className='vote-count'>{post.answer_count}&lt;/span>
+                                            &lt;div className='count-text'>answers&lt;/div>
+                                        &lt;/div>
+                                        &lt;div className='vote'>
+                                            &lt;span className='vote-count'>{post.comment_count}&lt;/span>
+                                            &lt;div className='count-text'>comments&lt;/div>
+                                        &lt;/div>
+                                        &lt;div className='vote'>
+                                            &lt;span className='vote-count'>1&lt;/span>
+                                            &lt;div className='count-text'>tags&lt;/div>
+                                        &lt;/div>
+                                    &lt;/div>
+                                &lt;/div>
+                                &lt;div className='post-cell'>
+                                    &lt;div className='post-text fc-black-800'>
+                                        {post.post_body}
+                                    &lt;/div>
+                                    &lt;div className='post-tags fc-black-800'>
+                                        &lt;div className='tag-cell'>
+                                            &lt;Link className='s-tag' to={`/tags/${post.tagname}`}>{post.tagname}&lt;/Link>
+                                        &lt;/div>
+                                    &lt;/div>
+                                    &lt;div className='post-actions fc-black-800'>
+                                        &lt;div className='post-actions-extended'>
+                                            &lt;div className='post-btns'>
+                                                &lt;div className='post-menu'>
+                                                    
+                                                    {!auth.loading &amp;&amp; auth.isAuthenticated &amp;&amp; parseInt(post.user_id) === auth.user.id &amp;&amp; (
+                                                        &lt;Link
+                                                            className='s-link s-link__danger'
+                                                            style={{paddingLeft: '4px'}}
+                                                            title='Delete the post'
+                                                            onClick={e => deletePost(post.id)}
+                                                            to='/'
+                                                        >
+                                                            delete
+                                                        &lt;/Link>
+                                                    )}
+                                                &lt;/div>
+                                            &lt;/div>
+                                            &lt;div className='post-owner'>
+                                                &lt;div className='user-block fc-black-500'>
+                                                    &lt;div className='action-time'>asked { moment(post.created_at).fromNow(true) } ago&lt;/div>
+                                                    &lt;div className='user-logo'>
+                                                        &lt;Link className='user-link' to={`/users/${post.user_id}`}>
+                                                            &lt;div className='logo-wrapper'>
+                                                                &lt;img alt='user_logo' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAASFBMVEXw8PB3xdTX5en69PL08vGTzNhyw9Ntw9Kd0NvT4+d5xtRvwtPa5+pxxNP08vCPy9jq7u5jwNG/3OOm0tz+9vSFyNa72+Ku1d7kOy6EAAADxElEQVR4nO2djXKiQBCE/YFdZUFOo3fv/6ZHBD1RU/ZeDUu7didUIGWG+bZnQCvrulhIkiRJkiRJkiRJ0qeqgESZ1Q4K9WuFqE6MaJhVsQqueaXlvl1PDhWflYeyKlZu+Vq+TE1ol9U7E4bsCVEPG0pCu6w+wUMRvj+h+nAeQnkYQ5i/hyIU4RQSoQinimUnEcYR6o4/D6GqVIS3sdSH8xDKwxjC/D0UoQinkG0fcl5p8vdQhCK8jcXZh4nv+FVD6SH6H1LfK4RuO3+fd/u9bjd0O2FfHq/zH7C5G1HaPRzWfTKhTyAMKfrr4XnDZhcUdVsCOm3SqjwBSbVf0AyRYg3ouNm/nhvxk0L0X3jn6yOSFwKIqdggfWGoZpt4Ak+x8UkBK5eeMCQlXM5AiNyf7CQPpyBM62H+hKrSKQjz91B9aCv14RSE+VepPLSV+nAKQnlorOw9nOM1vjy0lZ6XTkGoKhVhnPLvQ93xpyDMvw/loa3Uh1MQykNjzUCY9v+HHaFl9og2rqq64um+q5s8qqe7r1SdH3yJNfwcH1bd68PRBIbn8yMMV42oS+9eC+zVJ394v9v4Q228aoQbvr73mn+/uBz6U719rQPE10KhHtmHwz6l82a7asTxaZmMVScPlXheG2coyxlktISGaZkN1o6VkDEUaVq2HqoPI9JiHCzSgae9W5B6yJiWqpSaEJp+TluljAVPWloiFOE4FmPz0HrIOFikAy/COELG0iJ9Pz7nYJGWFm2VMoYiLS3aPmQMRZqW+jCOkHHgVaUiHMfS3WKOtFSlIhzHYiwt9eFshIyhaD3Uq6cYQsbSoq1SxlCkadESMrY06cCLMI6QsbTk4WyEjOVAOvCf0Iekz9oYB4u0tGirlDEUaWnR9iFjKNK01IdxhIwDryoVIX9an3ClIfWQcbBoCfP3UH0YQ5i/hyKch1DX0hhCLC3oTfT9ihD917AWxMOh43w/ftMCizjUh/slEJ7Jn6BQQFKmhEt3XUziusBEv3LDzaFzv4H1IFalH0K5m+3+EMnJlhBSs0U+osVuIRjLPoSELQxkuFxRcg9pCe08hJZVlYcREuHnEKoPYdF6KEJcIKHZ8n20hG98pcneQ/Xh+xPSeqhXT7BoCfWsDRath7qWwqL1UNdSWPkTqg9FGC1daS6E6kNY+XtIS6g+hEVLKA9xgYRmJ4QWe+0IfafQb+H753/L7THCfdM/fjhb8E9PHH7cvW576NMfFnVbWqmtkSH9Y3bC9gv6MJpibafkJ0TOJ0mSJEmSJEmSJEk56i+zk7G+y6HSlQAAAABJRU5ErkJggg=='/>
+                                                            &lt;/div>
+                                                        &lt;/Link>
+                                                    &lt;/div>
+                                                    &lt;div className='user-profile'>
+                                                        &lt;Link className='user-profile-link fc-blue-600' to={`/users/${post.user_id}`}>{post.username}&lt;/Link>
+                                                    &lt;/div>
+                                                &lt;/div>
+                                            &lt;/div>
+                                        &lt;/div>
+                                    &lt;/div>
+                                &lt;/div>
+                                &lt;div className='comments-cell'>
+                                    &lt;div className='comments'>
+                                        &lt;ul className='comments-list'>
+                                            {comment.loading === null ? &lt;Spinner width='25px' height='25px'/> : comment.comments.map(comment => (
+                                                &lt;li className='comments-item' key={comment.id} >
+                                                    &lt;div className='comment-text fc-black-800'>
+                                                        &lt;div className='comment-body'>
+                                                                &lt;span className='body'>
+                                                                    {comment.body}
+                                                                &lt;/span>
+                                                            &amp;nbsp;&amp;ndash;&amp;nbsp;
+                                                            &lt;Link className='s-tag' to={`/users/${comment.user_id}`}>
+                                                                {comment.username}
+                                                            &lt;/Link>
+                                                            &lt;span title={ moment(comment.created_at).fromNow(true) }
+                                                                  style={{color: '#959ca3 !important'}}
+                                                                  className='date fs-body1'>
+                                                                { moment(comment.created_at).fromNow(true) } ago
+                                                            &lt;/span>
+                                                        &lt;/div>
+                                                        {!auth.loading &amp;&amp; auth.isAuthenticated &amp;&amp; parseInt(comment.user_id) === auth.user.id &amp;&amp; (
+                                                            &lt;Link
+                                                                className='s-tag s-tag__moderator'
+                                                                style={{marginTop: '4px'}}
+                                                                title='Delete the comment'
+                                                                onClick={e => deleteComment(comment.id)}
+                                                                to={`/questions/${post.id}`}
+                                                            >
+                                                                delete
+                                                            &lt;/Link>
+                                                        )}
+                                                    &lt;/div>
+                                                &lt;/li>
+                                            ))}
+                                        &lt;/ul>
+                                    &lt;/div>
+                                    &lt;div className='add-comment'>
+                                        {!auth.loading &amp;&amp; auth.isAuthenticated ? &lt;Fragment>
+                                            &lt;form className='comment-form' onSubmit={e => onSubmit(e)}>
+                                                &lt;div>
+                                                    &lt;input
+                                                        className='title-input s-input'
+                                                        type='text'
+                                                        name='body'
+                                                        value={body}
+                                                        onChange={e => onChange(e)}
+                                                        id='title'
+                                                        placeholder='add comment'
+                                                    />
+                                                &lt;/div>
+                                            &lt;/form>
+                                        &lt;/Fragment> : &lt;Fragment>
+                                            &lt;Link to='/login'>
+                                                &lt;button type='button' className="s-btn">You need to login to add a comment&lt;/button>
+                                            &lt;/Link>
+                                        &lt;/Fragment>}
+
+                                    &lt;/div>
+                                &lt;/div>
+
+                            &lt;/div>
+                        &lt;/div>
+                        &lt;div className='answer'>
+                            &lt;div className='answer-header fc-black-800'>
+                                &lt;div className='answer-sub-header'>
+                                    &lt;div className='answer-headline'>
+                                        &lt;h2>Answers&lt;/h2>
+                                    &lt;/div>
+                                &lt;/div>
+                            &lt;/div>
+                            {answer.loading === null ? &lt;Spinner width='25px' height='25px'/> : answer.answers.map(answer => (
+                                &lt;div key={answer.id} className='answers'>
+                                    &lt;div className='answer-layout'>
+                                        &lt;div className='vote-cell'>
+                                            &lt;div className='vote-container'>
+                                                &lt;button
+                                                    className='vote-up'
+                                                    title='This answer is useful (click again to undo)'
+                                                >
+                                                    &lt;UpVote className='icon'/>
+                                                &lt;/button>
+                                                &lt;div className='vote-count fc-black-500'>0&lt;/div>
+                                                &lt;button
+                                                    className='vote-down'
+                                                    title='This answer is not useful (click again to undo)'
+                                                >
+                                                    &lt;DownVote className='icon'/>
+                                                &lt;/button>
+                                            &lt;/div>
+                                        &lt;/div>
+                                        &lt;div className='answer-item'>
+                                            &lt;div className='answer-content fc-black-800'>
+                                                &lt;p>
+                                                    {answer.body}
+                                                &lt;/p>
+                                            &lt;/div>
+                                            &lt;div className='answer-actions'>
+                                                &lt;div className='action-btns'>
+                                                    &lt;div className='answer-menu'>
+                                                        
+                                                        {!auth.loading &amp;&amp; auth.isAuthenticated &amp;&amp; parseInt(answer.user_id) === auth.user.id &amp;&amp; (
+                                                            &lt;Link
+                                                                className='s-link s-link__danger'
+                                                                style={{paddingLeft: '4px'}}
+                                                                title='Delete the answer'
+                                                                onClick={e => deleteAnswer(answer.id)}
+                                                                to={`/questions/${post.id}`}
+                                                            >
+                                                                delete
+                                                            &lt;/Link>
+                                                        )}
+                                                    &lt;/div>
+                                                &lt;/div>
+                                                &lt;div className='answer-owner'>
+                                                    &lt;div className='answer-user'>
+                                                        &lt;div className='answer-user-time fc-black-500'>
+                                                            answered&amp;nbsp;
+                                                            &lt;span>{ moment(answer.created_at).fromNow(true) } ago&lt;/span>
+                                                        &lt;/div>
+                                                        &lt;div className='answer-logo'>
+                                                            &lt;Link className='answer-user-link' to={`/users/${answer.user_id}`}>
+                                                                &lt;div className='answer-logo-wrapper'>
+                                                                    &lt;img alt='user_logo' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAARVBMVEXw8PDZbnzx9vbr2dvYZHTZa3rdiZTq1Nbej5nw8vHXYXHdh5Lcg47YaHfs3d7z/PvWWmvgnqbv6+zbeobnwcXac4Dip66dwP2nAAACXUlEQVR4nO3dUVLCQBRE0ZghgSQQMKD7X6pLsKeqG1+V9y6gMwf0L47DQERERERERPRPW4yVfOByNF+H8sDd97xdIS7tcXL1OAtPHOfV9bz1OkrC04erkyS8TK7nTTNChL0hRNgbQoT9IUTYG0KE/SFE2BtChP0hRNgbQoT9IUTYG0KE/SFE2BtChP0hrC2chNY2/t79clO23i78moWu20XoKU0pRKdwmu/C17Ovwpdz06a0UzmFwlbNqaLHQoiw/rEQIqx/LIQI6x8LIcL6x0KIsP6xECKsfyyECOsfCyHC+sdCiLD+sRAirH8shAjrH6usULmeQboIoahwOM5KTXjppqpQvLbkzaeyCm0hRJja8oUQYWrLF0KEqS1fCBGmtnwhRJja8oUQYWrLF0KEqS1fCBGmtnwhRJja8oUQYWrLF0KEqS1fXqHvmoBR+o8aypB4ecEmCfercovDU7kPYlZeQhi/lalNOdX2qb1doHyk2nUdq3a3iTTVpB8aBailXblivL1FmnKGEGFmyhlChJkpZwgRZqacIUSYmXKGEGFmyhlChJkpZwgRZqacIUSYmXKGEGFmyhlChJkpZwgRZqbEpD+h/wPhaPrT/mE5mtC+rcKFEA9JOCtT60s6lnZ7gXaZRVMuhDikBypLL+ljUK7YkN/Nubt+aKRfi5F3ohCGtnwhRJja8oUQYWrLF0KEqS1fCBGmtnwhRJja8oUQYWrLF0KEqS1fCBGmtnwhRJja8oUQYWrLF8I+oe9+Bl/OU2m3Roj3M9iynkq6NcJ5P4NUzVMRERERERERlekH6WecNo06EQoAAAAASUVORK5CYII='/>
+                                                                &lt;/div>
+                                                            &lt;/Link>
+                                                        &lt;/div>
+                                                        &lt;div className='answer-details'>
+                                                            &lt;Link className='answer-user-profile-link fc-blue-600' to={`/users/${answer.user_id}`}>{answer.username}&lt;/Link>
+                                                        &lt;/div>
+                                                    &lt;/div>
+                                                &lt;/div>
+                                            &lt;/div>
+                                        &lt;/div>
+                                    &lt;/div>
+                                &lt;/div>
+                            ))}
+                            &lt;div className='add-answer'>
+                                {!auth.loading &amp;&amp; auth.isAuthenticated ? &lt;Fragment>
+                                    &lt;form
+                                        className='answer-form'
+                                        onSubmit={e => onSubmitAnswer(e)}
+                                    >
+                                        &lt;div className='answer-grid'>
+                                            &lt;label className=' fc-black-800'>Your Answer&lt;/label>
+                                            &lt;textarea
+                                                className='s-textarea'
+                                                name='text'
+                                                cols='30'
+                                                rows='12'
+                                                value={text}
+                                                onChange={e => onChangeAnswer(e)}
+                                                placeholder='Enter body with minimum 30 characters'
+                                                id='text'
+                                            >
+                                            &lt;/textarea>
+                                            &lt;button className='s-btn s-btn__primary'>Post Your Answer&lt;/button>
+                                        &lt;/div>
+                                    &lt;/form>
+                                &lt;/Fragment> : &lt;Fragment>
+                                    &lt;Link to='/login'>
+                                        &lt;button type='button' style={{marginTop: '12px'}} className="s-btn s-btn__outlined">You need to login to add an answer&lt;/button>
+                                    &lt;/Link>
+                                &lt;/Fragment>}
+                            &lt;/div>
+                        &lt;/div>
+                    &lt;/div>
+                &lt;/div>
+            &lt;/div>
+        &lt;/div>
+    &lt;/Fragment>
+};
+
+Post.propTypes = {
+    getPost: PropTypes.func.isRequired,
+    post: PropTypes.object.isRequired,
+    auth: PropTypes.object.isRequired,
+    deletePost: PropTypes.func.isRequired,
+    addAnswer: PropTypes.func.isRequired,
+    deleteAnswer: PropTypes.func.isRequired,
+    addComment: PropTypes.func.isRequired,
+    deleteComment: PropTypes.func.isRequired,
+    getAnswers: PropTypes.func.isRequired,
+    answer: PropTypes.object.isRequired,
+    getComments: PropTypes.func.isRequired,
+    comment: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+    post: state.post,
+    auth: state.auth,
+    answer: state.answer,
+    comment: state.comment
+});
+
+export default connect(mapStateToProps, { getPost, deletePost, deleteAnswer, deleteComment, getAnswers,addAnswer, getComments, addComment })(Post);</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-redux_alert.html">redux/alert</a></li><li><a href="module-redux_answers.html">redux/answers</a></li><li><a href="module-redux_auth.html">redux/auth</a></li><li><a href="module-redux_comments.html">redux/comments</a></li><li><a href="module-redux_posts.html">redux/posts</a></li><li><a href="module-redux_tags.html">redux/tags</a></li><li><a href="module-redux_users.html">redux/users</a></li></ul><h3>Classes</h3><ul><li><a href="Header.html">Header</a></li><li><a href="HomePage.html">HomePage</a></li><li><a href="Login.html">Login</a></li><li><a href="module-components_alert-Alert.html">Alert</a></li><li><a href="Post.html">Post</a></li><li><a href="PostForm.html">PostForm</a></li><li><a href="PostItem.html">PostItem</a></li><li><a href="Register.html">Register</a></li><li><a href="SideBar.html">SideBar</a></li><li><a href="Spinner.html">Spinner</a></li><li><a href="TagPage.html">TagPage</a></li><li><a href="TagPanel.html">TagPanel</a></li><li><a href="TagsPage.html">TagsPage</a></li><li><a href="UserPage.html">UserPage</a></li><li><a href="UserPanel.html">UserPanel</a></li><li><a href="UsersPage.html">UsersPage</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Fri Nov 27 2020 18:32:50 GMT+0530 (India Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

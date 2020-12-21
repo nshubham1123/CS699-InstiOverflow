@@ -1,0 +1,31 @@
+/** 
+ * @module redux/tags
+ */
+
+
+import {
+    GET_TAGS,
+    TAG_ERROR
+} from './tags.types';
+import axios from 'axios';
+
+/**
+ * Get All  Tags
+ * @method  getTags 
+ */
+
+export const getTags = () => async dispatch => {
+    try {
+        const res = await axios.get('/api/tags');
+
+        dispatch({
+            type: GET_TAGS,
+            payload: res.data.data
+        });
+    } catch (err) {
+        dispatch({
+            type: TAG_ERROR,
+            payload: { msg: err.response.statusText, status: err.response.status }
+        });
+    }
+};

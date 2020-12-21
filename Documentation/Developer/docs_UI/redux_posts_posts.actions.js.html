@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: redux/posts/posts.actions.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: redux/posts/posts.actions.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** 
+ * @module redux/posts
+ */
+
+
+import axios from 'axios';
+import { setAlert } from '../alert/alert.actions';
+import {
+    GET_POSTS,
+    GET_POST,
+    GET_TOP_POSTS,
+    GET_TAG_POSTS,
+    POST_ERROR,
+    DELETE_POST,
+    ADD_POST
+} from './posts.types';
+
+/**
+ * Get All posts
+ * @method  getPosts
+ */
+// Get posts
+export const getPosts = () => async dispatch => {
+    try {
+        const res = await axios.get('/api/posts');
+
+        dispatch({
+            type: GET_POSTS,
+            payload: res.data.data
+        });
+    } catch (err) {
+        dispatch(setAlert(err.response.data.message, 'danger'));
+
+        dispatch({
+            type: POST_ERROR,
+            payload: { msg: err.response.statusText, status: err.response.status }
+        });
+    }
+};
+
+/**
+ * Get specific post
+ * @method  getPost
+ * @param {integer} id -Id of question
+ */
+// Get post
+export const getPost = id => async dispatch => {
+    try {
+        const res = await axios.get(`/api/posts/${id}`);
+          console.log("postData",res.data);
+        dispatch({
+            type: GET_POST,
+            payload: res.data.data
+        });
+    } catch (err) {
+        dispatch(setAlert(err.response.data.message, 'danger'));
+
+        dispatch({
+            type: POST_ERROR,
+            payload: { msg: err.response.statusText, status: err.response.status }
+        });
+    }
+};
+
+/**
+ * Get all questions of a course
+ * @method  getTopPosts
+ * @param {string} courseId -Id of course
+ */
+//GET TOP POSTS
+export const getTopPosts = (courseId) => async dispatch => {
+    try {
+        console.log("courseId is ",courseId);
+        const res = await axios.get(`/api/posts/top/${courseId}`);
+        console.log("aaa",res.data);
+
+        dispatch({
+            type: GET_TOP_POSTS,
+            payload: res.data.data
+        });
+    } catch (err) {
+        dispatch(setAlert(err.response.data.message, 'danger'));
+
+        dispatch({
+            type: POST_ERROR,
+            payload: { msg: err.response.statusText, status: err.response.status }
+        });
+    }
+};
+
+//GET TOP POSTS OF COURSES
+// export const getTopPosts = () => async dispatch => {
+//     try {
+//         const res = await axios.get('/api/posts/top');
+//         console.log("aaa",res.data);
+
+//         dispatch({
+//             type: GET_TOP_POSTS,
+//             payload: res.data.data
+//         });
+//     } catch (err) {
+//         dispatch(setAlert(err.response.data.message, 'danger'));
+
+//         dispatch({
+//             type: POST_ERROR,
+//             payload: { msg: err.response.statusText, status: err.response.status }
+//         });
+//     }
+// };
+
+//GET TAG POSTS
+
+/**
+ * Get quesions of a Tag
+ * @method  getTagPosts
+ * @param {string} tagName -tagName
+ * @param {string} courseId-courseId of the course
+ */
+export const getTagPosts = (tagName,courseId) => async dispatch => {
+    try {
+        const res = await axios.get(`/api/posts/tag/${tagName}/${courseId}`);
+
+        dispatch({
+            type: GET_TAG_POSTS,
+            payload: res.data.data
+        });
+    } catch (err) {
+        dispatch(setAlert(err.response.data.message, 'danger'));
+
+        dispatch({
+            type: POST_ERROR,
+            payload: { msg: err.response.statusText, status: err.response.status }
+        });
+    }
+};
+
+
+/**
+ * Add Post
+ * @method  addPost
+ * @param {object} formdata-contains all the data title,data and body
+ */
+// Add post
+export const addPost = formData => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+
+    try {
+        console.log("form Data is",formData)
+        const res = await axios.post('/api/posts', formData, config);
+
+        dispatch({
+            type: ADD_POST,
+            payload: res.data.data
+        });
+
+        dispatch(setAlert(res.data.message, 'success'));
+
+        dispatch(getPosts());
+    } catch (err) {
+        dispatch(setAlert(err.response.data.message, 'danger'));
+
+        dispatch({
+            type: POST_ERROR,
+            payload: { msg: err.response.statusText, status: err.response.status }
+        });
+    }
+};
+
+/**
+ * Delete post
+ * @method  deletePost
+ * @param {integer} id -Id of question
+ */
+// Delete post
+export const deletePost = id => async dispatch => {
+    try {
+        const res = await axios.delete(`/api/posts/${id}`);
+
+        dispatch({
+            type: DELETE_POST,
+            payload: id
+        });
+
+        dispatch(setAlert(res.data.message, 'success'));
+    } catch (err) {
+        dispatch(setAlert(err.response.data.message, 'danger'));
+
+        dispatch({
+            type: POST_ERROR,
+            payload: { msg: err.response.statusText, status: err.response.status }
+        });
+    }
+};</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-redux_alert.html">redux/alert</a></li><li><a href="module-redux_answers.html">redux/answers</a></li><li><a href="module-redux_auth.html">redux/auth</a></li><li><a href="module-redux_comments.html">redux/comments</a></li><li><a href="module-redux_posts.html">redux/posts</a></li><li><a href="module-redux_tags.html">redux/tags</a></li><li><a href="module-redux_users.html">redux/users</a></li></ul><h3>Classes</h3><ul><li><a href="Header.html">Header</a></li><li><a href="HomePage.html">HomePage</a></li><li><a href="Login.html">Login</a></li><li><a href="module-components_alert-Alert.html">Alert</a></li><li><a href="Post.html">Post</a></li><li><a href="PostForm.html">PostForm</a></li><li><a href="PostItem.html">PostItem</a></li><li><a href="Register.html">Register</a></li><li><a href="SideBar.html">SideBar</a></li><li><a href="Spinner.html">Spinner</a></li><li><a href="TagPage.html">TagPage</a></li><li><a href="TagPanel.html">TagPanel</a></li><li><a href="TagsPage.html">TagsPage</a></li><li><a href="UserPage.html">UserPage</a></li><li><a href="UserPanel.html">UserPanel</a></li><li><a href="UsersPage.html">UsersPage</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Fri Nov 27 2020 18:32:50 GMT+0530 (India Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

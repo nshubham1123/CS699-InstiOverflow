@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/singleUser/UserPage.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/singleUser/UserPage.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, {useEffect,Fragment} from 'react';
+import moment from 'moment';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { getUser } from '../../redux/users/users.actions';
+import { Link } from 'react-router-dom';
+
+import { ReactComponent as Logo } from '../../assets/LogoGlyphMd.svg';
+
+import SideBar from '../../components/leftSidePanel/leftSide.';
+
+import './UserPage.styles.scss'
+import Spinner from "../../components/spinner/spinner";
+/**
+ * Page to show all details related to single user
+ * @component
+ * @param getUser - get all details of user
+ * @param user - single user details
+ */
+
+const UserPage = ({ getUser, user: { user, loading }, match  }) => {
+    useEffect(() => {
+        getUser(match.params.id);
+        // eslint-disable-next-line
+    }, [getUser]);
+
+    return loading || user === null ? &lt;Spinner type='page' width='75px' height='200px'/> : &lt;Fragment>
+        &lt;div className='page'>
+            &lt;SideBar/>
+            &lt;div id="content">
+                &lt;div id='mainbar' className='user-main-bar pl24 pt24'>
+                    &lt;div className='user-card'>
+                        &lt;div className="grid--cell s-navigation mb16">
+                            &lt;Link to="#" className="s-navigation--item is-selected"
+                               data-shortcut="P">Profile&lt;/Link>
+                            
+                        &lt;/div>
+                        &lt;div className='grid'>
+                            &lt;div className='img-card'>
+                                &lt;div className='avatar-card'>
+                                    &lt;div className='avatar'>
+                                        &lt;Link className='avatar-link' to={`/users/${user.id}`}>
+                                            &lt;div className='logo-wrapper'>
+                                                &lt;img src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAANlBMVEXw8PDdy4Xx8vXcyX7s6Nzg0prr59jh05/cyHvt6t/f0JXbx3bx8/fdy4Pj16vv7uzezIro4cj87/UvAAACA0lEQVR4nO3cYU7CUBCFUYRWWrSo+9+sS+BOMg9e9HwLmM5p4BdkTidJkiRJkvRH+1r6+koeuPc9b4+Ey8elq4/34Hnndet63nY7R8LLW1eXSHg9up53rISE1QgJqxES1iMkrEZIWI+QsBohYT1CwmqEhPUICasREtYjJKxGSFiP8FXC7UiKhMvn+WGfmTBaKhPutzXoO1nrWK9B2ahoq3skPD1+7b0vvu/jcM6A2Vvo+/JkRV/pzggJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQn/jzD8lbtT2PcLdnQ1Yl+z3/GTSwjZpJ/kuETn1YhwrffHLX0v6xVXI4InNn7g/SeKsB4hYTVCwnqEhNUICesRElYjJKxHSFiNkLAeIWE1QsJ6hITVCAnrEc4tTE4JbJnw0nWWoFX4nRxxuC2J8B6Nyq5U9AmPte+IQ3SlYs+26hQ2nqB49laEhGMiJBw1qy9CwlGz+iIkHDWrL0LCUbP6IiQcNasvQsJRs/oiJBw1qy9CwlGz+iIkHDWrL0LCUbP6InyRMDpAkZ16mFQYHaDITj3MKpxy1KRrERLOvxYh4fxrERLOvxYh4fxrERLOvxYh4fxrERLOvxYh4fxrERLOvxYh4fxrERLOv1arcEuOOGRrTTnqtN+SKw73ZNaco7IrDo0HIZ4/SpIkSZKkP9gvDI+byX8+aAgAAAAASUVORK5CYII=' alt='user-logo'/>
+                                            &lt;/div>
+                                        &lt;/Link>
+                                    &lt;/div>
+                                    &lt;div className='title'>
+                                        
+                                    &lt;/div>
+                                &lt;/div>
+                            &lt;/div>
+                            &lt;div className='content-card'>
+                                &lt;div className='content-grid'>
+                                    &lt;div className='info-cell'>
+                                        &lt;div className='info'>
+                                            &lt;div className='details'>
+                                                &lt;h2>{user.username}&lt;/h2>
+                                            &lt;/div>
+                                            &lt;div className='date'>
+                                                &lt;p>
+                                                    user created &amp;nbsp;-&amp;nbsp;{ moment(user.created_at).fromNow(true) } ago
+                                                &lt;/p>
+                                            &lt;/div>
+                                        &lt;/div>
+                                    &lt;/div>
+                                    &lt;div className='stats-cell'>
+                                        &lt;div className='count-sec'>
+                                            &lt;div className='counts'>
+                                                &lt;div className='cells'>
+                                                    &lt;div className='column-grid'>
+                                                        &lt;div className='head fc-black-700'>
+                                                            {user.answer_count}
+                                                        &lt;/div>
+                                                        &lt;div className='foot fc-black-500'>
+                                                            answers
+                                                        &lt;/div>
+                                                    &lt;/div>
+                                                &lt;/div>
+                                                &lt;div className='cells'>
+                                                    &lt;div className='column-grid'>
+                                                        &lt;div className='head fc-black-700'>
+                                                            {user.post_count}
+                                                        &lt;/div>
+                                                        &lt;div className='foot fc-black-500'>
+                                                            questions
+                                                        &lt;/div>
+                                                    &lt;/div>
+                                                &lt;/div>
+                                                &lt;div className='cells'>
+                                                    &lt;div className='column-grid'>
+                                                        &lt;div className='head fc-black-700'>
+                                                            {user.comment_count}
+                                                        &lt;/div>
+                                                        &lt;div className='foot fc-black-500'>
+                                                            comments
+                                                        &lt;/div>
+                                                    &lt;/div>
+                                                &lt;/div>
+                                                &lt;div className='cells'>
+                                                    &lt;div className='column-grid'>
+                                                        &lt;div className='head fc-black-700'>
+                                                            {user.tag_count}
+                                                        &lt;/div>
+                                                        &lt;div className='foot fc-black-500'>
+                                                            tags
+                                                        &lt;/div>
+                                                    &lt;/div>
+                                                &lt;/div>
+                                            &lt;/div>
+                                        &lt;/div>
+                                    &lt;/div>
+                                &lt;/div>
+                            &lt;/div>
+                        &lt;/div>
+                    &lt;/div>
+                    &lt;div className='row-grid'>
+                        &lt;div className='grid-cell1'>
+                            &lt;div className='cell-layout'>
+                                
+                            &lt;/div>
+                        &lt;/div>
+                        &lt;div className='grid-cell2'>
+                            &lt;div className='top-tags'>
+                                &lt;h3 className='fw-bold fc-dark bc-black-3'>
+                                    Top Used Tags
+                                &lt;/h3>
+                                &lt;div className='top-tags-sec'>
+                                    &lt;div className='top-tags-cells'>
+                                        &lt;div className='top-cell'>
+                                            &lt;div className='tag-cell bg-black-025'>
+                                                &lt;Link className='s-tag s-tag__lg' to='/tags/java'>
+                                                    java
+                                                &lt;/Link>
+                                                &lt;div className='score'>
+                                                    &lt;div className='score-txt'>
+                                                        &lt;div className='score-tab'>
+                                                            &lt;span className='txt fc-light'>Posts&lt;/span>
+                                                            &lt;span className='number fc-black-800'>2&lt;/span>
+                                                        &lt;/div>
+                                                    &lt;/div>
+                                                &lt;/div>
+                                            &lt;/div>
+                                        &lt;/div>
+                                    &lt;/div>
+                                    &lt;div className='top-tags-cells'>
+                                        &lt;div className='top-cell'>
+                                            &lt;div className='tag-cell bg-black-025'>
+                                                &lt;Link className='s-tag s-tag__md' to='/tags/node.js'>
+                                                    node.js
+                                                &lt;/Link>
+                                                &lt;div className='score'>
+                                                    &lt;div className='score-txt'>
+                                                        &lt;div className='score-tab'>
+                                                            &lt;span className='txt fc-light'>Posts&lt;/span>
+                                                            &lt;span className='number fc-black-800'>1&lt;/span>
+                                                        &lt;/div>
+                                                    &lt;/div>
+                                                &lt;/div>
+                                            &lt;/div>
+                                        &lt;/div>
+                                    &lt;/div>
+                                    &lt;div className='top-tags-cells'>
+                                        &lt;div className='top-cell'>
+                                            &lt;div className='tag-cell bg-black-025'>
+                                                &lt;Link className='s-tag s-tag__md' to='/tags/react'>
+                                                    react
+                                                &lt;/Link>
+                                                &lt;div className='score'>
+                                                    &lt;div className='score-txt'>
+                                                        &lt;div className='score-tab'>
+                                                            &lt;span className='txt fc-light'>Posts&lt;/span>
+                                                            &lt;span className='number fc-black-800'>0&lt;/span>
+                                                        &lt;/div>
+                                                    &lt;/div>
+                                                &lt;/div>
+                                            &lt;/div>
+                                        &lt;/div>
+                                    &lt;/div>
+                                &lt;/div>
+                            &lt;/div>
+                        &lt;/div>
+                    &lt;/div>
+                &lt;/div>
+              
+            &lt;/div>
+        &lt;/div>
+    &lt;/Fragment>
+
+
+};
+
+UserPage.propTypes = {
+    getUser: PropTypes.func.isRequired,
+    user: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+    user: state.user
+});
+
+export default connect(mapStateToProps, { getUser })(UserPage);</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-redux_alert.html">redux/alert</a></li><li><a href="module-redux_answers.html">redux/answers</a></li><li><a href="module-redux_auth.html">redux/auth</a></li><li><a href="module-redux_comments.html">redux/comments</a></li><li><a href="module-redux_posts.html">redux/posts</a></li><li><a href="module-redux_tags.html">redux/tags</a></li><li><a href="module-redux_users.html">redux/users</a></li></ul><h3>Classes</h3><ul><li><a href="Header.html">Header</a></li><li><a href="HomePage.html">HomePage</a></li><li><a href="Login.html">Login</a></li><li><a href="module-components_alert-Alert.html">Alert</a></li><li><a href="Post.html">Post</a></li><li><a href="PostForm.html">PostForm</a></li><li><a href="PostItem.html">PostItem</a></li><li><a href="Register.html">Register</a></li><li><a href="SideBar.html">SideBar</a></li><li><a href="Spinner.html">Spinner</a></li><li><a href="TagPage.html">TagPage</a></li><li><a href="TagPanel.html">TagPanel</a></li><li><a href="TagsPage.html">TagsPage</a></li><li><a href="UserPage.html">UserPage</a></li><li><a href="UserPanel.html">UserPanel</a></li><li><a href="UsersPage.html">UsersPage</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Fri Nov 27 2020 18:32:50 GMT+0530 (India Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

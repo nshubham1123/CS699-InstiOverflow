@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/postItem/postItem.component.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/postItem/postItem.component.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React from 'react';
+import moment from 'moment';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
+
+import './postItem.styles.scss';
+
+/**
+ * Component to render a post
+ * @component
+ * @param post - Post to be displayed
+ * @param post.id - Id of post
+ * @param post.title - title of post
+ * @param post.body - description of post
+ * @param post.tagname - tags assosciated with post
+ * @param post.username - username of user who added post
+ * @param post.user_id - id of user who added post
+ * @param post.answer_count - count of answers for post
+ * @param post.comment_count - count of comments for post
+ * @param post.created - creation date &amp; time of post
+ * @param courseId - Id of course to which post is related
+ *  
+ */
+
+const PostItem = ({ post: { id, title, body, tagname, username, user_id, answer_count, comment_count, created_at } ,courseId}) => {
+    const answerVoteUp = (
+        &lt;div className='vote answer'>
+            &lt;span className='vote-count fc-green-500'>{answer_count}&lt;/span>
+            &lt;div className='count-text'>answers&lt;/div>
+        &lt;/div>
+    )
+
+    const answerVoteDown = (
+        &lt;div className='vote'>
+            &lt;span className='vote-count'>{answer_count}&lt;/span>
+            &lt;div className='count-text'>answers&lt;/div>
+        &lt;/div>
+    )
+
+    return (
+        &lt;div className='posts'>
+            &lt;div className='stats-container fc-black-500'>
+                &lt;div className='stats'>
+                    &lt;div className='vote'>
+                        &lt;span className='vote-count'>{comment_count}&lt;/span>
+                        &lt;div className='count-text'>comments&lt;/div>
+                    &lt;/div>
+                    {answer_count > 0 ? answerVoteUp : answerVoteDown}
+                    &lt;div className='vote'>
+                        &lt;span className='vote-count'>{tagname ? 1 : 0}&lt;/span>
+                        &lt;div className='count-text'>tags&lt;/div>
+                    &lt;/div>
+                &lt;/div>
+            &lt;/div>
+            &lt;div className='summary'>
+                &lt;h3>&lt;Link to={`/questions/${id}`}>
+                    {title}
+                &lt;/Link>&lt;/h3>
+                &lt;div className='brief'>
+                    {body.substring(0, 200)}...
+                &lt;/div>
+                &lt;div className='question-tags'>
+                    &lt;Link className='s-tag' to={`/tags/${courseId}/${tagname}`}>
+                        {tagname}
+                    &lt;/Link>
+                &lt;/div>
+                &lt;div className='question-user'>
+                    &lt;div className='user-info'>
+                        &lt;div className='user-action-time'>asked { moment(created_at).fromNow(true) } ago&lt;/div>
+                        &lt;div className='user-gravatar'>
+                            &lt;Link to={`/users/${user_id}`}>
+                                &lt;div className='logo-wrapper'>
+                                    &lt;img alt='userlogo'
+                                         src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAQlBMVEXw8PB+3GTy8PJ221n28fd83GGV4ILb7Nea4InX69L08fXe7duP33uW4IP78v1421zs7+tt2k2n4pmD3WvG6L6I3XHpYYlTAAAB70lEQVR4nO3dSU7DQBCG0QzOQGxjhnD/q8IqW6ql6qYi3neAsh8iu+jPbidJkiRJ0n/t8MSFgG+X522OEA+X9+PTtkwh4XH/rJ3OhITVIySsHyFh/QgJ60dIWD9CwvoREtaPkLB+hIT1IySsHyFh/QgfwlOg4CPHntpiwnk5/976GXqrZR166vxxCwh3hynQ6zXypz9exp6aQsBYU+y1XgLfb0k8lRkhYZ9TmRES9jmVGSFhn1OZERL2OZUZIWGfU5kREvY5lRkhYZ9TmRES9jmVGSFhn1OZERL2OZUZIWGfU9Ei6wx/ILyNXY2Y18HC7T4PXo0IfUckUbjfSq5GZAojjf9OFCFha4SE7REStkZI2B4hYWuEhO0RErZGSNgeIWFrhITtERK2RkjYHiFha4QPYWjrIVJwcWDLel7makSodTlfA31F9iBiJa5GxJoj/w7b+pr2wMTViFCxj3Tsw1MzQsL6ERLWj5CwfoSE9SMkrB8hYf0ICetHSFg/QsL6ERLWj5Cw34tldZtDwnVKe2LiakSo+b5FhEtkDyL4xMTViFAR4A8x7XnjVyNG55d0COtHSFg/QsL6ERLWj5CwfoSE9SMkrB8hYf0ICetHSFg/QsL6ET6EWSMOwxu+GjG+4asRwxu9GiFJkiRJUpm+AcyRpXgH9yu9AAAAAElFTkSuQmCC'/>
+                                &lt;/div>
+                            &lt;/Link>
+                        &lt;/div>
+                        &lt;div className='user-details'>
+                            &lt;Link to={`/users/${user_id}`}>
+                                {username}
+                            &lt;/Link>
+                        &lt;/div>
+                    &lt;/div>
+                &lt;/div>
+            &lt;/div>
+        &lt;/div>
+
+    )
+};
+
+PostItem.propTypes = {
+    post: PropTypes.object.isRequired
+};
+
+
+export default connect(null)(PostItem);</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-redux_alert.html">redux/alert</a></li><li><a href="module-redux_answers.html">redux/answers</a></li><li><a href="module-redux_auth.html">redux/auth</a></li><li><a href="module-redux_comments.html">redux/comments</a></li><li><a href="module-redux_posts.html">redux/posts</a></li><li><a href="module-redux_tags.html">redux/tags</a></li><li><a href="module-redux_users.html">redux/users</a></li></ul><h3>Classes</h3><ul><li><a href="Header.html">Header</a></li><li><a href="HomePage.html">HomePage</a></li><li><a href="Login.html">Login</a></li><li><a href="module-components_alert-Alert.html">Alert</a></li><li><a href="Post.html">Post</a></li><li><a href="PostForm.html">PostForm</a></li><li><a href="PostItem.html">PostItem</a></li><li><a href="Register.html">Register</a></li><li><a href="SideBar.html">SideBar</a></li><li><a href="Spinner.html">Spinner</a></li><li><a href="TagPage.html">TagPage</a></li><li><a href="TagPanel.html">TagPanel</a></li><li><a href="TagsPage.html">TagsPage</a></li><li><a href="UserPage.html">UserPage</a></li><li><a href="UserPanel.html">UserPanel</a></li><li><a href="UsersPage.html">UsersPage</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Fri Nov 27 2020 18:32:50 GMT+0530 (India Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

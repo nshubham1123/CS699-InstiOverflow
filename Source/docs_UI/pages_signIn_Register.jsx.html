@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/signIn/Register.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/signIn/Register.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState } from 'react';
+import {connect} from 'react-redux';
+import { Link, Redirect } from 'react-router-dom';
+import { setAlert } from '../../redux/alert/alert.actions';
+import { register } from '../../redux/auth/auth.actions';
+import PropTypes from 'prop-types';
+
+import { ReactComponent as Logo } from '../../assets/LogoGlyphMd.svg';
+
+import './Register.styles.scss'
+
+/**
+ * Page to register user
+ * @component
+ * @param register - user details
+ * @param register.username - username of new user
+ * @param register.password  - password of new user
+ * @param isAuthenticated - Authentication is required
+ * 
+ */
+
+const Register = ({ register, isAuthenticated }) => {
+    const [ formData, setFormData ] = useState({
+        username: '',
+        password: ''
+    });
+
+    const { username, password } = formData;
+
+    const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
+
+    const onSubmit = async e => {
+        e.preventDefault();
+        register({ username, password });
+    };
+
+    if (isAuthenticated) {
+        return &lt;Redirect to='/' />;
+    }
+
+    return (
+        &lt;div className='auth-page'>
+            &lt;div className='register-content'>
+                &lt;div className='register-grid'>
+                    &lt;div className='caption fc-black-600'>
+                        &lt;h3>Join the Insti Overflow community&lt;/h3>
+                        &lt;div className='caption-item'>
+                            &lt;div className='grid-icon'>
+                                &lt;svg width='26' height='26' className='svg-icon mtn2'>
+                                    &lt;path opacity='.5'
+                                          d='M4.2 4H22a2 2 0 012 2v11.8a3 3 0 002-2.8V5a3 3 0 00-3-3H7a3 3 0 00-2.8 2z'/>
+                                    &lt;path
+                                        d='M1 7c0-1.1.9-2 2-2h18a2 2 0 012 2v12a2 2 0 01-2 2h-2v5l-5-5H3a2 2 0 01-2-2V7zm10.6 11.3c.7 0 1.2-.5 1.2-1.2s-.5-1.2-1.2-1.2c-.6 0-1.2.4-1.2 1.2 0 .7.5 1.1 1.2 1.2zm2.2-5.4l1-.9c.3-.4.4-.9.4-1.4 0-1-.3-1.7-1-2.2-.6-.5-1.4-.7-2.4-.7-.8 0-1.4.2-2 .5-.7.5-1 1.4-1 2.8h1.9v-.1c0-.4 0-.7.2-1 .2-.4.5-.6 1-.6s.8.1 1 .4a1.3 1.3 0 010 1.8l-.4.3-1.4 1.3c-.3.4-.4 1-.4 1.6 0 0 0 .2.2.2h1.5c.2 0 .2-.1.2-.2l.1-.7.5-.7.6-.4z'/>
+                                &lt;/svg>
+                            &lt;/div>
+                            &lt;div className='grid-cell'>Get unstuck — ask a question&lt;/div>
+                        &lt;/div>
+                        &lt;div className='caption-item'>
+                            &lt;div className='grid-icon'>
+                                &lt;svg width='26' height='26' className='svg-icon mtn2'>
+                                    &lt;path d='M12 .7a2 2 0 013 0l8.5 9.6a1 1 0 01-.7 1.7H4.2a1 1 0 01-.7-1.7L12 .7z'/>
+                                    &lt;path opacity='.5'
+                                          d='M20.6 16H6.4l7.1 8 7-8zM15 25.3a2 2 0 01-3 0l-8.5-9.6a1 1 0 01.7-1.7h18.6a1 1 0 01.7 1.7L15 25.3z'/>
+                                &lt;/svg>
+                            &lt;/div>
+                            &lt;div className='grid--cell'>Unlock new privileges like answering and commenting&lt;/div>
+                        &lt;/div>
+                        &lt;div className='caption-item'>
+                            &lt;div className='grid-icon'>
+                                &lt;svg width='26' height='26' className='svg-icon mtn2'>
+                                    &lt;path
+                                        d='M14.8 3a2 2 0 00-1.4.6l-10 10a2 2 0 000 2.8l8.2 8.2c.8.8 2 .8 2.8 0l10-10c.4-.4.6-.9.6-1.4V5a2 2 0 00-2-2h-8.2zm5.2 7a2 2 0 110-4 2 2 0 010 4z'/>
+                                    &lt;path opacity='.5'
+                                          d='M13 0a2 2 0 00-1.4.6l-10 10a2 2 0 000 2.8c.1-.2.3-.6.6-.8l10-10a2 2 0 011.4-.6h9.6a2 2 0 00-2-2H13z'/>
+                                &lt;/svg>
+                            &lt;/div>
+                            &lt;div className='grid-cell'>Save your favorite tags, filters&lt;/div>
+                        &lt;/div>
+                        &lt;div className='caption-item'>
+                           
+                           
+                        &lt;/div>
+                       
+
+                    &lt;/div>
+                    &lt;div>
+                        &lt;div className='icon-holder'>
+                            &lt;Logo className='icon'/>
+                        &lt;/div>
+                        &lt;div className='form-container'>
+                            &lt;form className='login-form' onSubmit={e => onSubmit(e)}>
+                                &lt;div>
+                                    &lt;label className='form-label s-label fc-black-600'>Username&lt;/label>
+                                    &lt;input
+                                        className='form-input s-input'
+                                        type='text'
+                                        name='username'
+                                        value={username}
+                                        onChange={e => onChange(e)}
+                                        id='username'
+
+                                    />
+                                &lt;/div>
+                                &lt;div>
+                                    &lt;label className='form-label s-label fc-black-600'>Password&lt;/label>
+                                    &lt;input
+                                        className='form-input s-input'
+                                        type='password'
+                                        name='password'
+                                        value={password}
+                                        onChange={e => onChange(e)}
+                                        id='password'
+
+                                    />
+                                    &lt;p className='fs-caption fc-light'>
+                                        Passwords must contain at least 5 characters.
+                                    &lt;/p>
+                                &lt;/div>
+                                &lt;div className='grid gs4 gsy fd-column js-auth-item'>
+                                    &lt;button className='s-btn s-btn__primary' id='submit-button' name='submit-button'>Sign up&lt;/button>
+                                &lt;/div>
+                            &lt;/form>
+                            
+                        &lt;/div>
+                        &lt;div className='redirects fc-black-500'>
+                            Already have an account? &lt;Link to='/users/login?ssrc=head&amp;returnurl=%2fusers%2fstory%2fcurrent' name='login'>Log in&lt;/Link>
+                           
+                        &lt;/div>
+                    &lt;/div>
+                &lt;/div>
+            &lt;/div>
+        &lt;/div>
+    )
+};
+
+Register.propTypes = {
+    setAlert: PropTypes.func.isRequired,
+    register: PropTypes.func.isRequired,
+    isAuthenticated: PropTypes.bool
+};
+
+const mapStateToProps = state => ({
+    isAuthenticated: state.auth.isAuthenticated
+});
+
+export default connect(mapStateToProps, { setAlert, register })(Register);</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-redux_alert.html">redux/alert</a></li><li><a href="module-redux_answers.html">redux/answers</a></li><li><a href="module-redux_auth.html">redux/auth</a></li><li><a href="module-redux_comments.html">redux/comments</a></li><li><a href="module-redux_posts.html">redux/posts</a></li><li><a href="module-redux_tags.html">redux/tags</a></li><li><a href="module-redux_users.html">redux/users</a></li></ul><h3>Classes</h3><ul><li><a href="Header.html">Header</a></li><li><a href="HomePage.html">HomePage</a></li><li><a href="Login.html">Login</a></li><li><a href="module-components_alert-Alert.html">Alert</a></li><li><a href="Post.html">Post</a></li><li><a href="PostForm.html">PostForm</a></li><li><a href="PostItem.html">PostItem</a></li><li><a href="Register.html">Register</a></li><li><a href="SideBar.html">SideBar</a></li><li><a href="Spinner.html">Spinner</a></li><li><a href="TagPage.html">TagPage</a></li><li><a href="TagPanel.html">TagPanel</a></li><li><a href="TagsPage.html">TagsPage</a></li><li><a href="UserPage.html">UserPage</a></li><li><a href="UserPanel.html">UserPanel</a></li><li><a href="UsersPage.html">UsersPage</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Fri Nov 27 2020 18:32:50 GMT+0530 (India Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
